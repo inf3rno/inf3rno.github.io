@@ -3,14 +3,14 @@ if (window.opener){
 
 	window.console = window.opener.console;
 	console.log("child");
-  window.onload = function (){
-  	console.log("child loaded");
-  };
-  
+	window.onload = function (){
+		console.log("child loaded");
+	};
+
 } else {
 
 	console.log("parent");
-	
+
 	var win = window.open("about:blank");
 
 	var timeOrigin = Number(new Date());
@@ -25,8 +25,8 @@ if (window.opener){
 			con.log.apply(con, args);
 		}
 	};
-	
-	
+
+
 	win.addEventListener("unload", function (){
 		console.log("child unloaded");
 		setTimeout(function (){
@@ -35,8 +35,8 @@ if (window.opener){
 	});
 
 	win.document.location.href = window.location.href;
-  console.log("child URI changed");
-  
+	console.log("child URI changed");
+
 }
 </script>
 </head>
