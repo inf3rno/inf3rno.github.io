@@ -1,1 +1,48 @@
-<script src="https://gist.githubusercontent.com/inf3rno/5a36349e58e7e5c8de8641302a01aa0c/raw/ed2ea710500a60e8f8ef19399b633679f39fb1e9/measure-unload-next-tick-delay.js"></script>
+<html><head><script>
+if (window.opener){
+
+	window.console = window.opener.console;
+	console.log("child");
+  window.onload = function (){
+  	console.log("child loaded");
+  };
+  
+} else {
+
+	console.log("parent");
+	
+	var win = window.open("about:blank");
+
+	var timeOrigin = Number(new Date());
+	var doc = win.document;
+	var con = window.console;
+	window.console = {
+		log: function (){
+			var args = Array.prototype.slice.call(arguments);
+			args.push(win.document === doc?"old document":"new document");
+			args.push(win.document.readyState);
+			args.push((new Date()-timeOrigin) + " msecs");
+			con.log.apply(con, args);
+		}
+	};
+	
+	
+	win.addEventListener("unload", function (){
+		console.log("child unloaded");
+		setTimeout(function (){
+			console.log("child unloaded + next tick");
+		},0);
+	});
+
+	win.document.location.href = window.location.href;
+  console.log("child URI changed");
+  
+}
+</script>
+</head>
+<body>
+measuring {unload + next tick} delay by changing a child window location <br/>
+it is different by different browsers, Firefox has the lowest, while Opera the highest <br/>
+it is important, because some of the browsers can capture a loading page in a child window, while others cannot
+</body>
+</html>
